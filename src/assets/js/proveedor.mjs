@@ -1,5 +1,7 @@
-class Proveedor {
-  constructor(nombre, articulo, precio) {
+import TipoProveedor from "./tipo_proveedor.mjs";
+class Proveedor extends TipoProveedor {
+  constructor(nombre, articulo, precio, internacional, pais) {
+    super(internacional, pais)
     this._nombre = nombre;
     this._articulo = articulo;
     this._precio = precio;
@@ -30,7 +32,8 @@ class Proveedor {
   }
 
   getInfoProveedor() {
-    return `Proveedor: ${this._nombre}, Artículo: ${this._articulo}, Precio: ${this._precio}`;
+    let tipoProveedor= super.getInfoProveedor();
+    return `Proveedor: ${this._nombre}, Artículo: ${this._articulo}, Precio: ${this._precio}, ${tipoProveedor}`;
   }
 }
 

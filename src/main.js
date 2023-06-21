@@ -1,12 +1,27 @@
 import './assets/css/bootstrap.min.css';
 import './assets/css/style.css';
+import Paises from './assets/js/paises.mjs';
 import Articulo from "./assets/js/articulo.mjs";
 import Proveedor from "./assets/js/proveedor.mjs";
 
 document.addEventListener("DOMContentLoaded", function () {
   cargarSelectArticulos();
   listarProveedores();
+  listarPaises();
 });
+
+//Función para listar los paises
+const listarPaises = () => {
+  const selectPais = document.getElementById("paisProveedor");
+  selectPais.innerHTML = "";
+  Paises.forEach((pais, index) => {
+    const option = document.createElement("option");
+    option.value = pais;
+    option.text = pais;
+    selectPais.appendChild(option);
+  });
+}
+
 
 
 
@@ -39,7 +54,6 @@ const convertirLocalStorageAArticulos = () => {
   for (let i = 0; i < articulosLocalStorage.length; i++) {
     const { _nombre, _email, _telefono } = articulosLocalStorage[i];
     const articulo = new Articulo(_nombre, _email, _telefono);
-    console.log(articulo, articulosLocalStorage[i], Articulo)
     articulos.push(articulo);
   }
 
@@ -50,9 +64,10 @@ const convertirLocalStorageAProveedores = () => {
   const proveedores = [];
 
   for (let i = 0; i < proveedoresLocalStorage.length; i++) {
-    const { _nombre, _articulo, _precio } = proveedoresLocalStorage[i];
-    const proveedor = new Proveedor(_nombre, _articulo, _precio);
-    console.log(proveedor, proveedoresLocalStorage[i], Proveedor)
+    const { _nombre, _articulo, _precio, _internacional, _pais } = proveedoresLocalStorage[i];
+    const articulos = convertirLocalStorageAArticulos();
+    const articulo = articulos.length > 0 ? articulos[0] :"";
+    const proveedor = new Proveedor(_nombre, articulo, _precio, _internacional, _pais);
     proveedores.push(proveedor);
   }
 
@@ -65,8 +80,13 @@ document.getElementById("formProveedor").addEventListener("submit", function (ev
   const nombreProveedor = document.getElementById("nombreProveedor").value;
   const articuloSeleccionado = document.getElementById("articuloProveedor").value;
   const precioProveedor = parseFloat(document.getElementById("precioProveedor").value);
+  const esInternacional = document.getElementById("internacionalProveedor").checked;
+  const paisProveedor = document.getElementById("paisProveedor").value;
 
-  const proveedor = new Proveedor(nombreProveedor, articuloSeleccionado, precioProveedor);
+  let articulos = convertirLocalStorageAArticulos();
+  const articulo = articulos.find(articulo => articulo.nombre === articuloSeleccionado);
+
+  const proveedor = new Proveedor(nombreProveedor, articulo, precioProveedor, esInternacional, paisProveedor);
 
   // Obtener los proveedores existentes del localStorage o crear un nuevo array vacío
   let proveedores = convertirLocalStorageAProveedores();
@@ -125,7 +145,6 @@ const guardarArticulo = (nombre, email, telefono) => {
   let articulos = JSON.parse(localStorage.getItem("articulos")) || [];
 
   const articulo = new Articulo(nombre, email, telefono);
-  console.log(articulo)
   // Agregar el nuevo artículo al array
   articulos.push(articulo);
 
@@ -141,21 +160,29 @@ const listarProveedores = () => {
   tbody.innerHTML = "";
 
   // Recorrer los proveedores y agregar filas a la tabla
-  proveedores.forEach(function (proveedor) {
+  proveedores.forEach((proveedor) => {
+
     let fila = document.createElement("tr");
 
     let nombreCelda = document.createElement("td");
     nombreCelda.textContent = proveedor.nombre;
 
     let articuloCelda = document.createElement("td");
-    articuloCelda.textContent = proveedor.articulo;
+    articuloCelda.textContent = proveedor.articulo.nombre;
+    console.log(proveedor.articulo.nombre, proveedor.articulo)
 
     let precioCelda = document.createElement("td");
     precioCelda.textContent = proveedor.precio;
 
+    let esInternacionalCelda = document.createElement("td");
+    esInternacionalCelda.textContent = proveedor.internacional ? "Sí" : "No";
+     
+    let paisCelda = document.createElement("td");
+    paisCelda.textContent = proveedor.pais;
+
+
     //columna para los botones
     let actions = document.createElement("td");
-    actions.textContent = proveedor.precio;
 
     //boton para calcularImpuestoTotal 
     let btn = document.createElement("button");
@@ -172,13 +199,15 @@ const listarProveedores = () => {
     btn2.onclick = function () {
       alert("El proveedor es: " + proveedor.getInfoProveedor());
     }
-     
+
     actions.appendChild(btn);
     actions.appendChild(btn2);
 
     fila.appendChild(nombreCelda);
     fila.appendChild(articuloCelda);
     fila.appendChild(precioCelda);
+    fila.appendChild(esInternacionalCelda);
+    fila.appendChild(paisCelda);
     fila.appendChild(actions);
 
     tbody.appendChild(fila);
