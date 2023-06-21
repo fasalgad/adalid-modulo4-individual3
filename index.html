@@ -1,15 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vite App</title>
-	</head>
-	<body>
-		<main></main>
+<html lang="es">
 
-		<script src="./src/assets/js/bootstrap.bundle.min.js"></script>
-		<script type="module" src="./src/main.js"></script>
-	</body>
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Vite App</title>
+</head>
+
+<body>
+	<main>
+		<h1>Formulario de Proveedor</h1>
+
+		<form id="formProveedor">
+			<label for="nombreProveedor">Nombre del Proveedor:</label>
+			<input type="text" id="nombreProveedor" required>
+
+			<label for="articuloProveedor">Artículo:</label>
+			<select id="articuloProveedor" required></select>
+
+			<label for="precioProveedor">Precio:</label>
+			<input type="number" id="precioProveedor" required>
+
+			<button type="submit">Agregar Proveedor</button>
+		</form>
+
+		<form id="formArticulo">
+			<label for="nombreArticulo">Nombre del Artículo:</label>
+			<input type="text" id="nombreArticulo" required>
+
+			<label for="emailArticulo">Email del Artículo:</label>
+			<input type="email" id="emailArticulo" required>
+
+			<label for="telefonoArticulo">Teléfono del Artículo:</label>
+			<input type="text" id="telefonoArticulo" required>
+
+			<button type="submit">Guardar Artículo</button>
+		</form>
+		<div id="resultado"></div>
+		<h1>Listado de Proveedores</h1>
+
+		<div class="container">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Nombre</th>
+						<th scope="col">Artículo</th>
+						<th scope="col">Precio</th>
+					</tr>
+				</thead>
+				<tbody id="tablaProveedoresBody"></tbody>
+			</table>
+		</div>
+	</main>
+
+	<script src="./src/assets/js/bootstrap.bundle.min.js"></script>
+	<script type="module" src="./src/main.js"></script>
+</body>
+
 </html>
